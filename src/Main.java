@@ -6,6 +6,7 @@ public class Main {
     public static String playerOne, playerTwo, word, iWord, dWordd, clue;
     public static StringBuilder dWord = new StringBuilder();
     public static int k, playerTwoLives;
+    public static int tries = 30;
 
     public static void main(String[] args) {
         dWord.delete(0, dWord.length());
@@ -51,7 +52,7 @@ public class Main {
         Scanner scanWordOneG = new Scanner(System.in);
 
         for (int i = 0; i < playerTwoLives; i++) {
-            System.out.println(playerTwo + " you have " + playerTwoLives + " lives");
+            livesChecker(playerTwoLives);
 
             System.out.println(" ");
             System.out.print(playerTwo + " guess a letter from the word: ");
@@ -60,26 +61,30 @@ public class Main {
 
 
             wordChecker(wordOneG);
-            livesChecker(playerTwoLives);
             found = false;
         }
     }
 
     public static void wordChecker(char wordOneG) {
         for (int j = 0; j < word.length(); j++) {
+            livesChecker(playerTwoLives);
             found = wordOneG == word.charAt(j);
             dWordd = dWord.toString();
 
-
-            if (found && dWordd.charAt(j) == '_') {
-                dWord.setCharAt(j, wordOneG);
-                System.out.print("Word: " + dWord);
-                System.out.println("\n");
-
-                winChecker();
-
-                break;
+            for (int b = 0; b < word.length(); b++) {
+                found = wordOneG == word.charAt(b);
+                if (found && dWordd.charAt(j) == '_') {
+                    dWord.setCharAt(j, wordOneG);
+                }
             }
+
+            System.out.print("Word: " + dWord);
+            System.out.println("\n");
+            winChecker();
+/*
+            if (j == word.length() - 1) {
+                j = 0;
+            }*/
         }
         if (!found) {
             playerTwoLives--;
@@ -88,11 +93,10 @@ public class Main {
     }
 
     public static void livesChecker(int lives) {
+        System.out.println(playerTwo + " you have " + playerTwoLives + " lives");
         if (lives == 0) {
             System.out.println("Oops! " + playerTwo + " you lose, its Game over!!");
             playAgain();
-        } else {
-            System.out.print("");
         }
     }
 
