@@ -2,11 +2,14 @@ import java.util.Scanner;
 
 public class Main {
     public static boolean found = false;
-    public static String playerOne, playerTwo, word, iWord;
+    public static boolean won = false;
+    public static String playerOne, playerTwo, word, iWord, dWordd, clue;
     public static StringBuilder dWord = new StringBuilder();
     public static int k, playerTwoLives;
 
     public static void main(String[] args) {
+        dWord.delete(0, dWord.length());
+        won = false;
         System.out.println("-------------Hangman Game-------------\n");
 
         System.out.print("Input player 1 name: ");
@@ -29,7 +32,7 @@ public class Main {
         System.out.println("\nNow, input a clue to the word so " + playerTwo + " can guess it.");
         System.out.print("Clue: ");
         Scanner scanClue = new Scanner(System.in);
-        String clue = scanClue.nextLine();
+        clue = scanClue.nextLine();
 
         System.out.println("\n\n\n\n\n\n" + playerTwo + ", the clue is " + clue);
 
@@ -45,33 +48,43 @@ public class Main {
         System.out.println(dWord);
         System.out.println(" ");
 
+        Scanner scanWordOneG = new Scanner(System.in);
+
         for (int i = 0; i < playerTwoLives; i++) {
             System.out.println(playerTwo + " you have " + playerTwoLives + " lives");
 
             System.out.println(" ");
             System.out.print(playerTwo + " guess a letter from the word: ");
-            Scanner scanWordOneG = new Scanner(System.in);
+
             char wordOneG = scanWordOneG.next().charAt(0);
 
+
             wordChecker(wordOneG);
-            found = false;
             livesChecker(playerTwoLives);
+            found = false;
         }
     }
 
     public static void wordChecker(char wordOneG) {
         for (int j = 0; j < word.length(); j++) {
             found = wordOneG == word.charAt(j);
-            if (found) {
+            dWordd = dWord.toString();
+
+
+            if (found && dWordd.charAt(j) == '_') {
                 dWord.setCharAt(j, wordOneG);
                 System.out.print("Word: " + dWord);
                 System.out.println("\n");
+
+                winChecker();
+
                 break;
             }
         }
         if (!found) {
             playerTwoLives--;
         }
+
     }
 
     public static void livesChecker(int lives) {
@@ -84,8 +97,30 @@ public class Main {
     }
 
     public static void playAgain() {
-        System.out.println("Do you want to play again (Y/N): ");
-        String[] call = {"call"};
-        main(call);
+        System.out.print("\n\nDo you want to play again (Y/N): ");
+        Scanner playAgainS = new Scanner(System.in);
+        String playAgain = playAgainS.nextLine();
+
+        if (playAgain.equals("Y") || playAgain.equals("y")) {
+            System.out.println("\n\n\n\n\n\n\n");
+            String[] call = {"call"};
+            main(call);
+        } else if (playAgain.equals("N") || playAgain.equals("n")) {
+            System.out.println("\n\nGoodbye!");
+            System.exit(0);
+        } else {
+            System.out.println("\nInvalid input!");
+            playAgain();
+        }
+    }
+
+    public static void winChecker() {
+        String win = dWord.toString();
+        if (win.equals(word)) {
+            won = true;
+            System.out.println(playerTwo + " won. The word is \"" + word + "\".");
+
+            playAgain();
+        }
     }
 }
